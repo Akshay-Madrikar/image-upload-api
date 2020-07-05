@@ -1,8 +1,12 @@
 const express = require('express');
 require('dotenv').config();
 const upload = require('./services/multer');
+const { dataUri } = require('./services/dataUri');
+const { uploadCloudinary } = require('./services/cloudinary');
 
 const app = express();
+
+app.use(express.json());
 
 const singleUpload = upload.single('image');
 
@@ -17,14 +21,16 @@ const singleUploadCtrl = (req, res, next) => {
     });
 };
 
-app.post('/upload', singleUploadCtrl,(req,res) => {
+app.post('/upload', singleUploadCtrl, async (req,res) => {
     try {
         if(!req.file) {
             throw new Error();
         }
-        console.log(req.file);
+        const file64 = dataUri(req.file);
+        const result = await uploadCloudinary(file64.content);
+        console.log(result);
         res.json({
-            file: req.file,
+            file: result,
             message: 'File uploaded' 
         })
     } catch(error) {
