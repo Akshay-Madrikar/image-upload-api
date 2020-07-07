@@ -19,6 +19,7 @@ const Home = () => {
             });
 
             const usersJSON = await users.json();
+            console.log(usersJSON)
             if(usersJSON.error) {
                 setError(true);
             } else {

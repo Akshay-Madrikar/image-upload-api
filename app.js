@@ -42,7 +42,8 @@ app.get('/api/users', async(req, res) => {
 
 app.post('/api/create', async(req, res) => {
     try {
-        const user = new User(req.body);
+        const { name, pic } = req.body;
+        const user = new User({ name, pic });
         await user.save();
         res.status(201).json({
             user,
@@ -64,11 +65,10 @@ app.post('/api/upload', singleUploadCtrl, async (req,res) => {
         const result = await uploadCloudinary(file64.content);
         console.log(result);
         res.json({
-            file: result,
-            message: 'File uploaded' 
+            result
         })
     } catch(error) {
-        res.json({
+        res.status(400).json({
             error: 'Couldnt upload file'
         })
     }
