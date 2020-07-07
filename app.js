@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 require('dotenv').config();
 const upload = require('./services/multer');
 const { dataUri } = require('./services/dataUri');
@@ -9,6 +10,7 @@ require('./db/mongoose');
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 const singleUpload = upload.single('image');
 
