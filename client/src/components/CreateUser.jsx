@@ -22,15 +22,17 @@ const CreateUser = () => {
 
     const getImageUrl = async () => {
         const data = new FormData();
-        data.append('file', image);
+        data.append('image', image);
         try {
             const imageUrl = await fetch('http://localhost:5000/api/upload', {
                 method: 'POST',
                 body: data
             });
             const imageUrlJSON = await imageUrl.json();
+            console.log(imageUrlJSON)
             setValues({
-                url: imageUrlJSON.secure_url
+                ...values,
+                url: imageUrlJSON.result.secure_url
             });
             console.log(url)
         } catch(error) {
@@ -52,8 +54,8 @@ const CreateUser = () => {
                 })
             });
             const resultJSON = await result.json();
+            debugger
             console.log(resultJSON);
-            history.push('/');
         } catch(error) {
             console.log(error);
         }
