@@ -4,3 +4,4 @@
 - Technology used:
     Backend - Node.js w/ Express.js 
     Frontend - ReactJS
+- P.S. - Customize your input element by using file-upload folder if needed otherwise it's not necessary for this project
