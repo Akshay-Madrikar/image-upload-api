@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
         maxlength: 32
     },
    pic: {
-       type: String,
+       type: Object,
    }
 }, {
     timestamps: true

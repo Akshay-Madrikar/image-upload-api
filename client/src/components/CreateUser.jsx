@@ -1,18 +1,22 @@
 import React from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom';
+
 
 const CreateUser = () => {
 
     const [values, setValues] = useState({
         name: '',
         image: '',
-        url: undefined
+        url: undefined,
+        cloudinary_id: undefined
     });
+
+    const [previewImage, setPreviewImage] = useState('');
     const history = useHistory();
     
-    const { name, image, url } = values;
+    const { name, image, url, cloudinary_id } = values;
 
     useEffect(() => {
         if(url) {
@@ -29,12 +33,11 @@ const CreateUser = () => {
                 body: data
             });
             const imageUrlJSON = await imageUrl.json();
-            console.log(imageUrlJSON)
             setValues({
                 ...values,
-                url: imageUrlJSON.result.secure_url
+                url: imageUrlJSON.result.secure_url,
+                cloudinary_id: imageUrlJSON.result.public_id
             });
-            console.log(url)
         } catch(error) {
             console.log(error);
         }
@@ -50,27 +53,47 @@ const CreateUser = () => {
                 },
                 body: JSON.stringify({
                     name,
-                    pic: url
+                    pic: {
+                        cloudinary_url: url,
+                        cloudinary_id
+                    }
                 })
             });
             const resultJSON = await result.json();
-            debugger
-            console.log(resultJSON);
+            history.push('/');
         } catch(error) {
             console.log(error);
         }
     }
 
     const handleChange = (name) => (event) => {
-        const value = name === 'image' ? event.target.files[0] : event.target.value;
+        const value = event.target.value;
+        //const value = name === 'image' ? event.target.files[0] : event.target.value;
         setValues({
             ...values,
             [name]: value
         })
     };
 
+    const handleImage = (event) => {
+        const value = event.target.files[0];
+        setValues({
+            ...values,
+            image: value
+        })
+        previewFile(value)
+    }
+
+    const previewFile = (file) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+            setPreviewImage(reader.result)
+        }
+    }
+
     const handleSubmit = (event) => {
-        event.preventDefault();
+         event.preventDefault();
         if(image) {
             getImageUrl();
         } else {
@@ -93,8 +116,16 @@ const CreateUser = () => {
                     />
                 </div>
                 <div className="form-group">
+                    <label>Select profile picture</label>
+                    {/* <FileLoader onFileUpload={(imageId) => {
+                        setValues({image: imageId})
+                    }}
+                    /> */}
                     <label>Profile picture</label>
-                    <input type="file" className="form-control" onChange={handleChange('image')}/>
+                    <input type="file" className="form-control" onChange={handleImage}/>
+                    {previewImage && (
+                        <img src={previewImage} alt='chosen' style={{height: '250px', padding: '10px'}}/>
+                    )}
                 </div>
                 <button className="btn btn-primary">Submit</button>
             </form>

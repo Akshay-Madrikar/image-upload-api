@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
+import { Image } from 'cloudinary-react';
 
 const Home = () => {
 
@@ -54,7 +55,13 @@ const Home = () => {
                 { users.map((user) => (
                     <div key={user._id} className="card home-card" style={{ padding: '10px', margin: '20px' }} >
                     <div className="card-image">
-                        <img src={user.pic} alt=""/>
+                        <Image 
+                            publicId={user.pic.cloudinary_id}
+                            alt="user-pic"
+                            cloudName='dexkk3lc4'
+                            height='450'
+                            width='450'
+                        />
                     </div>
                     <div className="card-content">
                         <h3>{user.name}</h3>
